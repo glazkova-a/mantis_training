@@ -1,6 +1,6 @@
-from model.project import Group
+from model.project import Project
 
-class GroupHelper:
+class ProjectHelper:
 
     def __init__(self, app):
         self.app = app
@@ -124,13 +124,35 @@ class GroupHelper:
 
     def open_projects_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("Manage").click()
-        wd.find_element_by_link_text("Manage Projects").click()
+        if not wd.current_url.endswith("/manage_proj_page.php"):
+            wd.find_element_by_link_text("Manage").click()
+            wd.find_element_by_link_text("Manage Projects").click()
 
+    project_cache = None
+
+    def create_project(self, project):
+        wd = self.app.wd
+        self.open_projects_page()
+        wd.find_element_by_xpath("//input[@value='Create New Project']").click()
+        wd.find_element_by_name("name").click()
+        wd.find_element_by_name("name").clear()
+        wd.find_element_by_name("name").send_keys(project.name)
+        wd.find_element_by_name("description").click()
+        wd.find_element_by_name("description").clear()
+        wd.find_element_by_name("description").send_keys(project.description)
+        wd.find_element_by_xpath("//input[@value='Add Project']").click()
+        self.project_cache = None
 
     def get_projects_list(self):
+        if self.project_cache is None:
+            wd = self.app.wd
+            self.open_projects_page()
+            self.project_cache = []
+            for element in wd.find_elements_by_css_selector("span.group"):
+                text = element.text
+                id = element.find_element_by_name("selected[]").get_attribute("value")
+                self.group_cache.append(Group(name=text, id=id))
 
 
-    def create_project(self):
 
     def count_projects(self):
