@@ -148,11 +148,14 @@ class ProjectHelper:
             wd = self.app.wd
             self.open_projects_page()
             self.project_cache = []
-            for element in wd.find_elements_by_css_selector("span.group"):
-                text = element.text
-                id = element.find_element_by_name("selected[]").get_attribute("value")
-                self.group_cache.append(Group(name=text, id=id))
-
-
+            for element in wd.find_elements_by_css_selector("tr[class*='row']"):
+                cells = element.find_elements_by_tag_name("td")
+                name = cells[0].text
+                description = cells[4].text
+                self.project_cache.append(Project(name=name, description=description))
 
     def count_projects(self):
+        wd = self.app.wd
+        self.open_projects_page()
+        return len(wd.find_elements_by_xpath('//a[contains(@href,"href")]'))
+
