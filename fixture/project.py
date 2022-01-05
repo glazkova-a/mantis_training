@@ -124,7 +124,7 @@ class ProjectHelper:
 
     def open_projects_page(self):
         wd = self.app.wd
-        if not wd.current_url.endswith("/manage_proj_page.php"):
+        if not wd.current_url.endswith("/manage_overview_page.php"):
             wd.find_element_by_link_text("Manage").click()
             wd.find_element_by_link_text("Manage Projects").click()
 
@@ -142,6 +142,7 @@ class ProjectHelper:
         wd.find_element_by_name("description").send_keys(project.description)
         wd.find_element_by_xpath("//input[@value='Add Project']").click()
         self.project_cache = None
+
 
     def get_projects_list(self):
         if self.project_cache is None:
